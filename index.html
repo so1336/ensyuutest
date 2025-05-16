@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>てしごとマンガ館</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+      background-color: #fffaf5;
+      color: #333;
+      scroll-behavior: smooth;
+    }
+    header {
+      background-color: #c13b30;
+      color: white;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    header p {
+      margin: 0.5rem 0 0;
+      font-size: 1rem;
+      font-weight: 300;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #f2dede;
+      padding: 0.5rem 0;
+      gap: 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    nav a {
+      color: #c13b30;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .section {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .section h2 {
+      font-size: 1.4rem;
+      color: #c13b30;
+      margin-bottom: 0.5rem;
+    }
+    .section p {
+      font-size: 1.1rem;
+    }
+    .manga-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .manga-item {
+      width: 160px;
+      text-align: center;
+    }
+    .manga-item img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+    .manga-item p {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+    .flow-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 1rem;
+    }
+    .button-link {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1.5rem;
+      background-color: #c13b30;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #999;
+      margin-top: 3rem;
+      padding-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>てしごとマンガ館</h1>
+    <p>未来にのこす職人の技</p>
+  </header>
+
+  <nav>
+    <a href="#overview">概要</a>
+    <a href="#manga-list">本を探す</a>
+    <a href="upload.html">ログイン</a>
+  </nav>
+
+  <main>
+    <div id="overview" class="section">
+      <h2>サービス概要</h2>
+      <p>職人の技を動画で記録し、AIで漫画化。後継者育成や技術の可視化を支援します。</p>
+    </div>
+
+    <div class="section">
+      <h2>こんな方におすすめ</h2>
+      <p>伝統工芸の技術を残したい職人の方、技を学びたい若い世代の方に。</p>
+    </div>
+
+    <div class="section">
+      <h2>公開までの流れ</h2>
+      <p>てしごとマンガ館での技術共有のプロセスはとてもシンプルです。</p>
+      <img class="flow-image" src="画像1.png" alt="公開までの流れ">
+    </div>
+
+    <div id="manga-list" class="section">
+      <h2>公開中のマンガ</h2>
+      <div class="manga-gallery">
+        <div class="manga-item">
+          <img src="段落テキスト.png" alt="はてにゃんの日常①">
+          <p>はてにゃんの日常①</p>
+        </div>
+        <div class="manga-item">
+          <img src="段落テキスト (1).png" alt="はてにゃんの日常②">
+          <p>はてにゃんの日常②</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <a class="button-link" href="#">サービスの詳細を見る</a>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 てしごとマンガ館 Project
+  </footer>
+
+</body>
+</html>
