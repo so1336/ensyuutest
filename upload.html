@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>アップロード | てしごとマンガ館</title>
+  <title>てしごとマンガ館</title>
   <style>
     body {
       margin: 0;
       font-family: "Hiragino Kaku Gothic ProN", sans-serif;
       background-color: #fffaf5;
       color: #333;
+      scroll-behavior: smooth;
     }
     header {
       background-color: #c13b30;
@@ -44,22 +45,88 @@
       text-decoration: underline;
     }
     main {
-      max-width: 600px;
+      max-width: 800px;
       margin: 2rem auto;
       padding: 1rem;
       background: white;
       border-radius: 12px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    .section {
+      margin-bottom: 2rem;
       text-align: center;
     }
-    main p {
-      margin-bottom: 1rem;
+    .section h2 {
+      font-size: 1.4rem;
+      color: #c13b30;
+      margin-bottom: 0.5rem;
+    }
+    .section p {
       font-size: 1.1rem;
     }
-    input[type="file"] {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
+    .manga-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .manga-item {
+      width: 160px;
+      text-align: center;
+    }
+    .manga-item img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+    .manga-item p {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+    .flow-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 1rem;
+    }
+    .button-link {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1.5rem;
+      background-color: #c13b30;
+      color: white;
+      text-decoration: none;
       border-radius: 4px;
+      font-size: 1rem;
+    }
+    .ad-banner {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 180px;
+      z-index: 1000;
+    }
+    .ad-banner img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .close-btn {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #c13b30;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 1001;
     }
     footer {
       text-align: center;
@@ -69,6 +136,12 @@
       padding-bottom: 2rem;
     }
   </style>
+  <script>
+    function closeAd(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    }
+  </script>
 </head>
 <body>
 
@@ -78,14 +151,54 @@
   </header>
 
   <nav>
-    <a href="index.html#overview">概要</a>
-    <a href="index.html#manga-list">本を探す</a>
+    <a href="#overview">概要</a>
+    <a href="#manga-list">本を探す</a>
     <a href="upload.html">ログイン</a>
   </nav>
 
+  <div id="ad1" class="ad-banner" style="top: 100px; right: 20px;">
+    <button class="close-btn" onclick="closeAd('ad1')">×</button>
+    <img src="段落テキスト (2).png" alt="Profitly広告">
+  </div>
+  <div id="ad2" class="ad-banner" style="top: 320px; right: 20px;">
+    <button class="close-btn" onclick="closeAd('ad2')">×</button>
+    <img src="段落テキスト (3).png" alt="Craftly広告">
+  </div>
+
   <main>
-    <p>職人の作業風景を動画でアップロードしてください。</p>
-    <input type="file" accept="video/*">
+    <div id="manga-list" class="section">
+      <h2>公開中のマンガ</h2>
+      <div class="manga-gallery">
+        <div class="manga-item">
+          <img src="段落テキスト.png" alt="はてにゃんの日常①">
+          <p>はてにゃんの日常①</p>
+        </div>
+        <div class="manga-item">
+          <img src="段落テキスト (1).png" alt="はてにゃんの日常②">
+          <p>はてにゃんの日常②</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="overview" class="section">
+      <h2>サービス概要</h2>
+      <p>職人の技を動画で記録し、AIで漫画化。後継者育成や技術の可視化を支援します。</p>
+    </div>
+
+    <div class="section">
+      <h2>こんな方におすすめ</h2>
+      <p>伝統工芸の技術を残したい職人の方、技を学びたい若い世代の方に。</p>
+    </div>
+
+    <div class="section">
+      <h2>公開までの流れ</h2>
+      <p>てしごとマンガ館での技術共有のプロセスはとてもシンプルです。</p>
+      <img class="flow-image" src="画像1.png" alt="公開までの流れ">
+    </div>
+
+    <div class="section">
+      <a class="button-link" href="#">サービスの詳細を見る</a>
+    </div>
   </main>
 
   <footer>
