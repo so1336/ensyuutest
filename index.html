@@ -51,6 +51,7 @@
       background: white;
       border-radius: 12px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
     }
     .section {
       margin-bottom: 2rem;
@@ -101,6 +102,32 @@
       border-radius: 4px;
       font-size: 1rem;
     }
+    .ad-banner {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 180px;
+      z-index: 1000;
+    }
+    .ad-banner img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .close-btn {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #c13b30;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 1001;
+    }
     footer {
       text-align: center;
       font-size: 0.9rem;
@@ -109,6 +136,12 @@
       padding-bottom: 2rem;
     }
   </style>
+  <script>
+    function closeAd(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    }
+  </script>
 </head>
 <body>
 
@@ -122,6 +155,15 @@
     <a href="#manga-list">本を探す</a>
     <a href="upload.html">ログイン</a>
   </nav>
+
+  <div id="ad1" class="ad-banner" style="top: 100px; right: 20px;">
+    <button class="close-btn" onclick="closeAd('ad1')">×</button>
+    <img src="段落テキスト (2).png" alt="Profitly広告">
+  </div>
+  <div id="ad2" class="ad-banner" style="top: 320px; right: 20px;">
+    <button class="close-btn" onclick="closeAd('ad2')">×</button>
+    <img src="段落テキスト (3).png" alt="Craftly広告">
+  </div>
 
   <main>
     <div id="manga-list" class="section">
