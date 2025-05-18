@@ -104,7 +104,7 @@
     }
     .ad-banner {
       position: fixed;
-      top: 20px;
+      top: 100px;
       right: 20px;
       width: 180px;
       z-index: 1000;
@@ -141,6 +141,22 @@
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const ads = [
+        { id: 'ad1', src: '段落テキスト (2).png', alt: 'Profitly広告' },
+        { id: 'ad2', src: '段落テキスト (3).png', alt: 'Craftly広告' }
+      ];
+      const chosenAd = ads[Math.floor(Math.random() * ads.length)];
+      const adDiv = document.createElement('div');
+      adDiv.id = chosenAd.id;
+      adDiv.className = 'ad-banner';
+      adDiv.innerHTML = `
+        <button class="close-btn" onclick="closeAd('${chosenAd.id}')">×</button>
+        <img src="${chosenAd.src}" alt="${chosenAd.alt}">
+      `;
+      document.body.appendChild(adDiv);
+    });
   </script>
 </head>
 <body>
@@ -155,15 +171,6 @@
     <a href="#manga-list">本を探す</a>
     <a href="upload.html">ログイン</a>
   </nav>
-
-  <div id="ad1" class="ad-banner" style="top: 100px; right: 20px;">
-    <button class="close-btn" onclick="closeAd('ad1')">×</button>
-    <img src="段落テキスト (2).png" alt="Profitly広告">
-  </div>
-  <div id="ad2" class="ad-banner" style="top: 320px; right: 20px;">
-    <button class="close-btn" onclick="closeAd('ad2')">×</button>
-    <img src="段落テキスト (3).png" alt="Craftly広告">
-  </div>
 
   <main>
     <div id="manga-list" class="section">
