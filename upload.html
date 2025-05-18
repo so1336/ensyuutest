@@ -3,94 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>アップロード | てしごとマンガ館</title>
+  <title>管理者ページ - アップロード</title>
   <style>
     body {
-      margin: 0;
       font-family: "Hiragino Kaku Gothic ProN", sans-serif;
       background-color: #fffaf5;
-      color: #333;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
     }
-    header {
-      background-color: #c13b30;
-      color: white;
-      padding: 1.5rem 1rem;
+    h1 {
+      color: #f2643d;
       text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    header h1 {
-      margin: 0;
-      font-size: 1.8rem;
-    }
-    header p {
-      margin: 0.5rem 0 0;
-      font-size: 1rem;
-      font-weight: 300;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      background-color: #f2dede;
-      padding: 0.5rem 0;
-      gap: 2rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    nav a {
-      color: #c13b30;
-      text-decoration: none;
+    label {
+      display: block;
+      margin-top: 1rem;
       font-weight: bold;
     }
-    nav a:hover {
-      text-decoration: underline;
-    }
-    main {
-      max-width: 600px;
-      margin: 2rem auto;
-      padding: 1rem;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-    main p {
-      margin-bottom: 1rem;
-      font-size: 1.1rem;
-    }
-    input[type="file"] {
+    input {
+      width: 100%;
       padding: 0.5rem;
-      border: 1px solid #ccc;
+      margin-top: 0.3rem;
       border-radius: 4px;
+      border: 1px solid #ccc;
     }
-    footer {
-      text-align: center;
-      font-size: 0.9rem;
-      color: #999;
-      margin-top: 3rem;
-      padding-bottom: 2rem;
+    button {
+      margin-top: 1.5rem;
+      background-color: #f2643d;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #d7522e;
+    }
+    .message {
+      margin-top: 1rem;
+      color: green;
     }
   </style>
 </head>
 <body>
+  <h1>マンガ情報のアップロード</h1>
 
-  <header>
-    <h1>てしごとマンガ館</h1>
-    <p>未来にのこす職人の技</p>
-  </header>
+  <label for="title">タイトル</label>
+  <input type="text" id="title" placeholder="例：はてにゃんの日常①">
 
-  <nav>
-    <a href="index.html#overview">概要</a>
-    <a href="index.html#manga-list">本を探す</a>
-    <a href="upload.html">ログイン</a>
-  </nav>
+  <label for="image">画像URL</label>
+  <input type="text" id="image" placeholder="例：https://example.com/cover.jpg">
 
-  <main>
-    <p>職人の作業風景を動画でアップロードしてください。</p>
-    <input type="file" accept="video/*">
-  </main>
+  <button onclick="uploadManga()">アップロード</button>
+  <p class="message" id="message"></p>
 
-  <footer>
-    &copy; 2025 てしごとマンガ館 Project
-  </footer>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-database.js";
 
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcyI62L31r-rQzdVFGW-nwfv_Zpuc_DJw",
+      authDomain: "teshigoto-manga.firebaseapp.com",
+      databaseURL: "https://teshigoto-manga-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "teshigoto-manga",
+      storageBucket: "teshigoto-manga.firebasestorage.app",
+      messagingSenderId: "252929773577",
+      appId: "1:252929773577:web:83626137c6a2a08c24e8d8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.uploadManga = async () => {
+      const title = document.getElementById('title').value.trim();
+      const image = document.getElementById('image').value.trim();
+      const message = document.getElementById('message');
+
+      if (!title || !image) {
+        message.textContent = "すべての項目を入力してください。";
+        message.style.color = "red";
+        return;
+      }
+
+      try {
+        const newRef = push(ref(db, 'manga'));
+        await set(newRef, { title, image });
+        message.textContent = "アップロードが完了しました！";
+        message.style.color = "green";
+        document.getElementById('title').value = '';
+        document.getElementById('image').value = '';
+      } catch (error) {
+        message.textContent = "アップロードに失敗しました。";
+        message.style.color = "red";
+      }
+    }
+  </script>
 </body>
 </html>
