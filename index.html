@@ -17,7 +17,7 @@
     }
     .intro {
       max-width: 800px;
-      margin: 2rem auto;
+      margin: 2rem auto 1rem;
       background: white;
       padding: 1.5rem;
       border-radius: 12px;
@@ -29,7 +29,7 @@
       flex-wrap: wrap;
       gap: 1rem;
       justify-content: center;
-      margin-top: 2rem;
+      margin-top: 1rem;
     }
     .manga-item {
       width: 160px;
@@ -74,6 +74,8 @@
 <body>
   <h1>てしごとマンガ館</h1>
 
+  <div class="manga-gallery"></div>
+
   <div class="intro">
     <p>
       てしごとマンガ館は、職人たちの技術や伝統工芸の魅力を未来に伝えることを目的としたウェブサービスです。
@@ -84,8 +86,6 @@
       このページでは、Firebaseと連携し、リアルタイムで更新された漫画のタイトルとサムネイル画像を表示しています。
     </p>
   </div>
-
-  <div class="manga-gallery"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
