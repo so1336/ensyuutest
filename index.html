@@ -15,6 +15,15 @@
       text-align: center;
       color: #c13b30;
     }
+    .intro {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      line-height: 1.6;
+    }
     .manga-gallery {
       display: flex;
       flex-wrap: wrap;
@@ -64,6 +73,17 @@
 </head>
 <body>
   <h1>てしごとマンガ館</h1>
+
+  <div class="intro">
+    <p>
+      てしごとマンガ館は、職人たちの技術や伝統工芸の魅力を未来に伝えることを目的としたウェブサービスです。
+      工房での作業を動画で記録し、それをAIが自動で漫画化。技術継承や学習ツールとして活用できるだけでなく、
+      一般ユーザーが楽しめるコンテンツとしても提供します。
+    </p>
+    <p>
+      このページでは、Firebaseと連携し、リアルタイムで更新された漫画のタイトルとサムネイル画像を表示しています。
+    </p>
+  </div>
 
   <div class="manga-gallery"></div>
 
