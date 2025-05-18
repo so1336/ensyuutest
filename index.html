@@ -158,6 +158,38 @@
       document.body.appendChild(adDiv);
     });
   </script>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcyI62L31r-rQzdVFGW-nwfv_Zpuc_DJw",
+      authDomain: "teshigoto-manga.firebaseapp.com",
+      databaseURL: "https://teshigoto-manga-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "teshigoto-manga",
+      storageBucket: "teshigoto-manga.firebasestorage.app",
+      messagingSenderId: "252929773577",
+      appId: "1:252929773577:web:83626137c6a2a08c24e8d8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const mangaRef = ref(db, 'manga');
+    onValue(mangaRef, (snapshot) => {
+      const data = snapshot.val();
+      const container = document.querySelector('.manga-gallery');
+      container.innerHTML = '';
+      for (let id in data) {
+        const { title, image } = data[id];
+        container.innerHTML += `
+          <div class="manga-item">
+            <img src="${image}" alt="${title}">
+            <p>${title}</p>
+          </div>`;
+      }
+    });
+  </script>
 </head>
 <body>
 
