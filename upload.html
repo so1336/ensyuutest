@@ -21,7 +21,7 @@
       margin-top: 1rem;
       font-weight: bold;
     }
-    input {
+    input[type="text"], input[type="file"] {
       width: 100%;
       padding: 0.5rem;
       margin-top: 0.3rem;
@@ -52,8 +52,11 @@
   <label for="title">タイトル</label>
   <input type="text" id="title" placeholder="例：はてにゃんの日常①">
 
-  <label for="image">画像URL</label>
-  <input type="text" id="image" placeholder="例：https://example.com/cover.jpg">
+  <label for="mangaFile">マンガ画像ファイル</label>
+  <input type="file" id="mangaFile" accept="image/*">
+
+  <label for="thumbnailFile">サムネイル画像ファイル</label>
+  <input type="file" id="thumbnailFile" accept="image/*">
 
   <button onclick="uploadManga()">アップロード</button>
   <p class="message" id="message"></p>
@@ -61,38 +64,56 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
     import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-database.js";
+    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBcyI62L31r-rQzdVFGW-nwfv_Zpuc_DJw",
       authDomain: "teshigoto-manga.firebaseapp.com",
       databaseURL: "https://teshigoto-manga-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "teshigoto-manga",
-      storageBucket: "teshigoto-manga.firebasestorage.app",
+      storageBucket: "teshigoto-manga.appspot.com",
       messagingSenderId: "252929773577",
       appId: "1:252929773577:web:83626137c6a2a08c24e8d8"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const storage = getStorage(app);
 
     window.uploadManga = async () => {
       const title = document.getElementById('title').value.trim();
-      const image = document.getElementById('image').value.trim();
+      const mangaFile = document.getElementById('mangaFile').files[0];
+      const thumbnailFile = document.getElementById('thumbnailFile').files[0];
       const message = document.getElementById('message');
 
-      if (!title || !image) {
+      if (!title || !mangaFile || !thumbnailFile) {
         message.textContent = "すべての項目を入力してください。";
         message.style.color = "red";
         return;
       }
 
       try {
+        const mangaStorageRef = sRef(storage, `manga/${mangaFile.name}`);
+        const thumbStorageRef = sRef(storage, `thumbnails/${thumbnailFile.name}`);
+
+        await uploadBytes(mangaStorageRef, mangaFile);
+        await uploadBytes(thumbStorageRef, thumbnailFile);
+
+        const mangaURL = await getDownloadURL(mangaStorageRef);
+        const thumbnailURL = await getDownloadURL(thumbStorageRef);
+
         const newRef = push(ref(db, 'manga'));
-        await set(newRef, { title, image });
+        await set(newRef, {
+          title,
+          image: thumbnailURL,
+          manga: mangaURL
+        });
+
         message.textContent = "アップロードが完了しました！";
         message.style.color = "green";
         document.getElementById('title').value = '';
-        document.getElementById('image').value = '';
+        document.getElementById('mangaFile').value = '';
+        document.getElementById('thumbnailFile').value = '';
       } catch (error) {
         message.textContent = "アップロードに失敗しました。";
         message.style.color = "red";
