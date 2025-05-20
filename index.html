@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>てしごとマンガ館（Firebase連携版）</title>
+  <title>てしごとマンガ館（Supabase版）</title>
   <style>
     body {
       font-family: "Hiragino Kaku Gothic ProN", sans-serif;
@@ -15,39 +15,15 @@
       background-color: #f2643d;
       color: white;
       padding: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-    nav {
-      margin-top: 0.5rem;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin-right: 1rem;
-      font-weight: bold;
-    }
-    .intro, .flow, .upload {
-      max-width: 800px;
-      margin: 2rem auto 1rem;
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      line-height: 1.6;
+      text-align: center;
     }
     .manga-gallery {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
       justify-content: center;
-      margin-top: 2rem;
+      margin: 2rem auto;
+      max-width: 1000px;
     }
     .manga-item {
       width: 160px;
@@ -61,129 +37,56 @@
     .manga-item p {
       margin-top: 0.5rem;
     }
-    .ad-banner {
-      position: fixed;
-      top: 100px;
-      right: 20px;
-      width: 180px;
-      z-index: 1000;
-    }
-    .ad-banner img {
-      width: 100%;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-    .close-btn {
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      background: #c13b30;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      font-size: 16px;
-      cursor: pointer;
-      z-index: 1001;
-    }
   </style>
 </head>
 <body>
   <header>
     <h1>てしごとマンガ館</h1>
-    <nav>
-      <a href="#">概要</a>
-      <a href="#">本を探す</a>
-      <a href="upload.html">管理者ページ</a>
-      <a href="#">お問い合わせ</a>
-    </nav>
   </header>
 
-  <div class="manga-gallery"></div>
-
-  <div class="intro">
-    <h2>サービス紹介</h2>
-    <p>
-      てしごとマンガ館は、職人たちの技術や伝統工芸の魅力を未来に伝えることを目的としたウェブサービスです。
-      工房での作業を動画で記録し、それをAIが自動で漫画化。技術継承や学習ツールとして活用できるだけでなく、
-      一般ユーザーが楽しめるコンテンツとしても提供します。
-    </p>
-    <p>
-      このページでは、Firebaseと連携し、リアルタイムで更新された漫画のタイトルとサムネイル画像を表示しています。
-    </p>
-  </div>
-
-  <div class="flow">
-    <h2>利用の流れ</h2>
-    <ol>
-      <li>職人が工房で撮影（またはアップロード）</li>
-      <li>AIが映像を解析して自動で漫画を生成</li>
-      <li>編集確認後、Webに公開（有料/無料選択可）</li>
-      <li>一般ユーザーが閲覧・購入・技術の理解に活用</li>
-    </ol>
-  </div>
-
-  <div class="upload">
-    <h2>ログイン・アップロード</h2>
-    <p>職人・運営者は以下のリンクからログインし、映像をアップロードできます。</p>
-    <a href="upload.html">▶ ログインして映像をアップロード</a>
-  </div>
+  <main>
+    <div class="manga-gallery" id="gallery">
+      <p>読み込み中...</p>
+    </div>
+  </main>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
-    import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-database.js";
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBcyI62L31r-rQzdVFGW-nwfv_Zpuc_DJw",
-      authDomain: "teshigoto-manga.firebaseapp.com",
-      databaseURL: "https://teshigoto-manga-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "teshigoto-manga",
-      storageBucket: "teshigoto-manga.firebasestorage.app",
-      messagingSenderId: "252929773577",
-      appId: "1:252929773577:web:83626137c6a2a08c24e8d8"
-    };
+    const supabase = createClient(
+      'https://ygbdzopcrxqzzrxqatcn.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnYmR6b3BjcnhxenpyeHFhdGNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MzEzNzksImV4cCI6MjA2MzIwNzM3OX0.4L-ckYRDae2jSJrKwb2kML7AS77MeR5bOaELpmW41Yc'
+    );
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    async function fetchManga() {
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
 
-    const mangaRef = ref(db, 'manga');
-    onValue(mangaRef, (snapshot) => {
-      const data = snapshot.val();
-      const container = document.querySelector('.manga-gallery');
-      container.innerHTML = '';
-      for (let id in data) {
-        const { title, image } = data[id];
-        container.innerHTML += `
-          <div class="manga-item">
-            <img src="${image}" alt="${title}">
-            <p>${title}</p>
-          </div>`;
+      const { data, error } = await supabase.from('manga').select('*').order('id', { ascending: false });
+
+      if (error) {
+        console.error('データ取得エラー:', error.message);
+        gallery.innerHTML = '<p>マンガの読み込みに失敗しました。</p>';
+        return;
       }
-    });
-  </script>
 
-  <script>
-    function closeAd(id) {
-      const el = document.getElementById(id);
-      if (el) el.style.display = 'none';
+      if (!data || data.length === 0) {
+        gallery.innerHTML = '<p>マンガがまだ登録されていません。</p>';
+        return;
+      }
+
+      for (const item of data) {
+        const div = document.createElement('div');
+        div.className = 'manga-item';
+        div.innerHTML = `
+          <img src="${item.image}" alt="${item.title}" />
+          <p>${item.title}</p>
+        `;
+        gallery.appendChild(div);
+      }
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
-      const ads = [
-        { id: 'ad1', src: '段落テキスト (2).png', alt: 'Profitly広告' },
-        { id: 'ad2', src: '段落テキスト (3).png', alt: 'Craftly広告' }
-      ];
-      const chosenAd = ads[Math.floor(Math.random() * ads.length)];
-      const adDiv = document.createElement('div');
-      adDiv.id = chosenAd.id;
-      adDiv.className = 'ad-banner';
-      adDiv.innerHTML = `
-        <button class="close-btn" onclick="closeAd('${chosenAd.id}')">×</button>
-        <img src="${chosenAd.src}" alt="${chosenAd.alt}">
-      `;
-      document.body.appendChild(adDiv);
-    });
+    fetchManga();
   </script>
 </body>
 </html>
