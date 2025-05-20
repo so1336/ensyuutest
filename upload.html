@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>管理者ページ - アップロード</title>
+  <meta charset="UTF-8" />
+  <title>管理者アップロード（Supabase）</title>
   <style>
     body {
-      font-family: "Hiragino Kaku Gothic ProN", sans-serif;
-      background-color: #fffaf5;
-      padding: 2rem;
+      font-family: sans-serif;
+      background: #fffaf5;
       max-width: 600px;
-      margin: auto;
+      margin: 2rem auto;
+      padding: 2rem;
     }
     h1 {
       color: #f2643d;
@@ -37,86 +36,81 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #d7522e;
-    }
     .message {
       margin-top: 1rem;
-      color: green;
     }
   </style>
 </head>
 <body>
-  <h1>マンガ情報のアップロード</h1>
+  <h1>マンガアップロード</h1>
 
   <label for="title">タイトル</label>
-  <input type="text" id="title" placeholder="例：はてにゃんの日常①">
+  <input type="text" id="title" placeholder="例：はてにゃんの日常①" />
 
-  <label for="mangaFile">マンガ画像ファイル</label>
-  <input type="file" id="mangaFile" accept="image/*">
+  <label for="mangaFile">マンガ画像</label>
+  <input type="file" id="mangaFile" accept="image/*" />
 
-  <label for="thumbnailFile">サムネイル画像ファイル</label>
-  <input type="file" id="thumbnailFile" accept="image/*">
+  <label for="thumbnailFile">サムネイル画像</label>
+  <input type="file" id="thumbnailFile" accept="image/*" />
 
-  <button onclick="uploadManga()">アップロード</button>
+  <button onclick="upload()">アップロード</button>
   <p class="message" id="message"></p>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
-    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-database.js";
-    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-storage.js";
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBcyI62L31r-rQzdVFGW-nwfv_Zpuc_DJw",
-      authDomain: "teshigoto-manga.firebaseapp.com",
-      databaseURL: "https://teshigoto-manga-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "teshigoto-manga",
-      storageBucket: "teshigoto-manga.appspot.com",
-      messagingSenderId: "252929773577",
-      appId: "1:252929773577:web:83626137c6a2a08c24e8d8"
-    };
+    const supabase = createClient(
+      'https://ygbdzopcrxqzzrxqatcn.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnYmR6b3BjcnhxenpyeHFhdGNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MzEzNzksImV4cCI6MjA2MzIwNzM3OX0.4L-ckYRDae2jSJrKwb2kML7AS77MeR5bOaELpmW41Yc'
+    );
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const storage = getStorage(app);
-
-    window.uploadManga = async () => {
+    async function upload() {
       const title = document.getElementById('title').value.trim();
       const mangaFile = document.getElementById('mangaFile').files[0];
       const thumbnailFile = document.getElementById('thumbnailFile').files[0];
       const message = document.getElementById('message');
 
       if (!title || !mangaFile || !thumbnailFile) {
-        message.textContent = "すべての項目を入力してください。";
-        message.style.color = "red";
+        message.textContent = 'すべての項目を入力してください。';
+        message.style.color = 'red';
         return;
       }
 
       try {
-        const mangaStorageRef = sRef(storage, `manga/${mangaFile.name}`);
-        const thumbStorageRef = sRef(storage, `thumbnails/${thumbnailFile.name}`);
+        const mangaPath = `manga/${mangaFile.name}`;
+        const thumbPath = `thumbnails/${thumbnailFile.name}`;
 
-        await uploadBytes(mangaStorageRef, mangaFile);
-        await uploadBytes(thumbStorageRef, thumbnailFile);
+        // マンガ画像アップロード
+        const { error: mangaErr } = await supabase.storage.from('manga').upload(mangaPath, mangaFile, { upsert: true });
+        if (mangaErr) throw mangaErr;
 
-        const mangaURL = await getDownloadURL(mangaStorageRef);
-        const thumbnailURL = await getDownloadURL(thumbStorageRef);
+        // サムネイル画像アップロード
+        const { error: thumbErr } = await supabase.storage.from('thumbnails').upload(thumbPath, thumbnailFile, { upsert: true });
+        if (thumbErr) throw thumbErr;
 
-        const newRef = push(ref(db, 'manga'));
-        await set(newRef, {
-          title,
-          image: thumbnailURL,
-          manga: mangaURL
-        });
+        // 公開URL取得
+        const mangaURL = `https://ygbdzopcrxqzzrxqatcn.supabase.co/storage/v1/object/public/manga/${mangaFile.name}`;
+        const thumbURL = `https://ygbdzopcrxqzzrxqatcn.supabase.co/storage/v1/object/public/thumbnails/${thumbnailFile.name}`;
 
-        message.textContent = "アップロードが完了しました！";
-        message.style.color = "green";
+        // DBに登録
+        const { error: dbErr } = await supabase.from('manga').insert([
+          {
+            title,
+            image: thumbURL,
+            manga: mangaURL
+          }
+        ]);
+        if (dbErr) throw dbErr;
+
+        message.textContent = 'アップロードが完了しました！';
+        message.style.color = 'green';
         document.getElementById('title').value = '';
         document.getElementById('mangaFile').value = '';
         document.getElementById('thumbnailFile').value = '';
-      } catch (error) {
-        message.textContent = "アップロードに失敗しました。";
-        message.style.color = "red";
+      } catch (err) {
+        console.error(err);
+        message.textContent = 'アップロードに失敗しました。';
+        message.style.color = 'red';
       }
     }
   </script>
