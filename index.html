@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>てしごとマンガ館（Supabase版）</title>
   <style>
     body {
@@ -15,15 +15,34 @@
       background-color: #f2643d;
       color: white;
       padding: 1rem;
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    nav a {
+      margin-left: 1rem;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+    }
+    main {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    section {
+      margin-bottom: 3rem;
     }
     .manga-gallery {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
       justify-content: center;
-      margin: 2rem auto;
-      max-width: 1000px;
     }
     .manga-item {
       width: 160px;
@@ -37,17 +56,46 @@
     .manga-item p {
       margin-top: 0.5rem;
     }
+    .flow-image {
+      width: 100%;
+      max-width: 800px;
+      display: block;
+      margin: 1rem auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
+
   <header>
     <h1>てしごとマンガ館</h1>
+    <nav>
+      <a href="#top">トップ</a>
+      <a href="#flow">サービスの流れ</a>
+      <a href="#gallery">マンガ一覧</a>
+      <a href="upload.html">管理者ページ</a>
+    </nav>
   </header>
 
   <main>
-    <div class="manga-gallery" id="gallery">
-      <p>読み込み中...</p>
-    </div>
+    <section id="top">
+      <h2>トップページ</h2>
+      <p>「てしごとマンガ館」は、職人の技術や伝統工芸の魅力を漫画で伝えるWebサービスです。</p>
+    </section>
+
+    <section id="flow">
+      <h2>サービスの流れ</h2>
+      <img src="画像1.png" alt="サービスの流れ図解" class="flow-image" />
+      <p>このサービスでは、職人が撮影した動画をAIが漫画に変換し、Webで公開します。閲覧者は作品を無料で一部閲覧でき、全編を見たい場合は課金または商品購入が必要です。</p>
+    </section>
+
+    <section id="gallery">
+      <h2>公開中のマンガ</h2>
+      <div class="manga-gallery" id="gallery-area">
+        <p>読み込み中...</p>
+      </div>
+    </section>
   </main>
 
   <script type="module">
@@ -59,7 +107,7 @@
     );
 
     async function fetchManga() {
-      const gallery = document.getElementById('gallery');
+      const gallery = document.getElementById('gallery-area');
       gallery.innerHTML = '';
 
       const { data, error } = await supabase.from('manga').select('*').order('id', { ascending: false });
