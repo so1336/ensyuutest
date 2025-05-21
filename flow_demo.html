@@ -55,19 +55,40 @@
     .video-upload {
       margin-bottom: 1rem;
     }
-    #progress-container {
-      width: 100%;
-      background-color: #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 1rem;
+    /* ポップアップのスタイル */
+    #popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      border: 2px solid #f2643d;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       display: none;
+      width: 300px;
+      text-align: center;
+      z-index: 1000;
     }
     #progress-bar {
       height: 20px;
       width: 0;
       background-color: #f2643d;
       transition: width 0.3s;
+      margin-top: 1rem;
+      border-radius: 10px;
+    }
+    #progress-container {
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    #ok-button {
+      margin-top: 1rem;
+      display: none;
+      padding: 0.5rem 1rem;
     }
   </style>
 </head>
@@ -90,11 +111,16 @@
     </div>
 
     <button onclick="startGeneration()">生成依頼</button>
+  </main>
 
+  <!-- ポップアップ -->
+  <div id="popup">
+    <div>生成中... <span id="progress-text">0%</span></div>
     <div id="progress-container">
       <div id="progress-bar"></div>
     </div>
-  </main>
+    <button id="ok-button" onclick="goHome()">OK</button>
+  </div>
 
   <script>
     function addVideoInput(input) {
@@ -108,21 +134,33 @@
     }
 
     function startGeneration() {
+      const popup = document.getElementById("popup");
       const progressBar = document.getElementById("progress-bar");
-      const progressContainer = document.getElementById("progress-container");
-      progressContainer.style.display = "block";
-      let progress = 0;
+      const progressText = document.getElementById("progress-text");
+      const okButton = document.getElementById("ok-button");
+
+      popup.style.display = "block";
       progressBar.style.width = "0%";
+      progressText.textContent = "0%";
+      okButton.style.display = "none";
+
+      let progress = 0;
 
       const interval = setInterval(() => {
         if (progress >= 100) {
           clearInterval(interval);
-          alert("生成が完了しました！");
+          progressText.textContent = "100%";
+          okButton.style.display = "inline-block";
         } else {
           progress += 2;
           progressBar.style.width = progress + "%";
+          progressText.textContent = progress + "%";
         }
-      }, 100); // 100msごとに2%進む（約5秒で完了）
+      }, 100); // 約5秒で完了
+    }
+
+    function goHome() {
+      window.location.href = "index.html";
     }
   </script>
 
