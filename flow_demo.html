@@ -49,13 +49,13 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    button:hover {
-      opacity: 0.9;
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
     }
     .video-upload {
       margin-bottom: 1rem;
     }
-    /* ポップアップのスタイル */
     #popup {
       position: fixed;
       top: 50%;
@@ -90,6 +90,20 @@
       display: none;
       padding: 0.5rem 1rem;
     }
+    .terms {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .checkbox-area {
+      margin-bottom: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -110,10 +124,24 @@
       </div>
     </div>
 
-    <button onclick="startGeneration()">生成依頼</button>
+    <div class="terms">
+      <strong>利用規約（概要）</strong><br>
+      ・アップロードされた動画データは、本サービスの動作確認目的にのみ使用されます。<br>
+      ・著作権に違反する動画、違法または不適切なコンテンツのアップロードは禁止されています。<br>
+      ・本サービスの結果や表示については、完全性・正確性を保証するものではありません。<br>
+      ・デモサイトにつき、生成処理は仮の動作であり、実際の動画生成は行われません。<br>
+      ・予告なく仕様が変更されることがあります。
+    </div>
+
+    <div class="checkbox-area">
+      <label>
+        <input type="checkbox" id="agree" onchange="toggleButton()"> 利用規約に同意します
+      </label>
+    </div>
+
+    <button id="generate-btn" onclick="startGeneration()" disabled>生成依頼</button>
   </main>
 
-  <!-- ポップアップ -->
   <div id="popup">
     <div>生成中... <span id="progress-text">0%</span></div>
     <div id="progress-container">
@@ -131,6 +159,12 @@
         newUpload.innerHTML = '<input type="file" accept="video/*" onchange="addVideoInput(this)">';
         container.appendChild(newUpload);
       }
+    }
+
+    function toggleButton() {
+      const checkbox = document.getElementById("agree");
+      const button = document.getElementById("generate-btn");
+      button.disabled = !checkbox.checked;
     }
 
     function startGeneration() {
@@ -156,7 +190,7 @@
           progressBar.style.width = progress + "%";
           progressText.textContent = progress + "%";
         }
-      }, 100); // 約5秒で完了
+      }, 100);
     }
 
     function goHome() {
