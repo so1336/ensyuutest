@@ -28,10 +28,6 @@
       margin: 2rem auto;
       padding: 1rem;
     }
-    h2 {
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
-    }
     input[type="text"], input[type="file"] {
       width: 100%;
       padding: 0.5rem;
@@ -52,6 +48,18 @@
     button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
+    }
+    .terms, .privacy {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .checkbox-area {
+      margin-bottom: 1rem;
     }
     .video-upload {
       margin-bottom: 1rem;
@@ -90,31 +98,18 @@
       display: none;
       padding: 0.5rem 1rem;
     }
-    .terms {
-      background: #fff;
-      border: 1px solid #ccc;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    .checkbox-area {
-      margin-bottom: 1rem;
+    #privacy-full {
+      display: none;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
-
   <header>
     <h1>てしごとマンガ館</h1>
   </header>
-
   <main>
-    <h2>サービス利用フロー（デモ）</h2>
-
+    <h2>サービス利用フロー</h2>
     <label>タイトル:</label>
     <input type="text" placeholder="ここにタイトルを入力してください">
 
@@ -125,17 +120,26 @@
     </div>
 
     <div class="terms">
-      <strong>利用規約（概要）</strong><br>
-      ・アップロードされた動画データは、本サービスの動作確認目的にのみ使用されます。<br>
-      ・著作権に違反する動画、違法または不適切なコンテンツのアップロードは禁止されています。<br>
-      ・本サービスの結果や表示については、完全性・正確性を保証するものではありません。<br>
-      ・デモサイトにつき、生成処理は仮の動作であり、実際の動画生成は行われません。<br>
-      ・予告なく仕様が変更されることがあります。
+      <strong>利用規約</strong><br>
+      ・本サービスは、ユーザーがアップロードした動画から特定の処理を行い、結果を提供するものです。<br>
+      ・ユーザーは、著作権を含む第三者の権利を侵害しないコンテンツのみをアップロードする責任を負います。<br>
+      ・本サービスの利用により生じたいかなる損害についても、当社は責任を負いません。<br>
+      ・不適切と判断されるコンテンツの削除権限は、当社が保持します。<br>
+      ・ユーザーの利用履歴は、サービス改善や分析に活用される場合があります。
+    </div>
+
+    <div class="privacy">
+      <strong>プライバシーポリシー</strong><br>
+      ・当サービスは、ユーザーの個人情報を収集・保管・分析し、場合によっては外部に共有することがあります。<br>
+      <button onclick="togglePrivacy()">全文を見る</button>
+      <div id="privacy-full">
+        あなたが本サービスを利用した瞬間から、あらゆる行動は監視され、記録され、第三者に販売される可能性があります。私たちは、ユーザーのブラウジング履歴、動画ファイルのメタデータ、マウスの動き、クリック位置など、ありとあらゆるデータを対象とし、必要とあらばそれをどこにでも送信する権利を有します。さらに、当社が判断する"必要性"に基づき、将来的に予告なく新たな情報を取得することもあります。あなたがこのサービスを利用するということは、これらすべてに無条件に同意したことと見なされます。...（以下数千文字続く）
+      </div>
     </div>
 
     <div class="checkbox-area">
       <label>
-        <input type="checkbox" id="agree" onchange="toggleButton()"> 利用規約に同意します
+        <input type="checkbox" id="agree" onchange="toggleButton()"> 利用規約とプライバシーポリシーに同意します
       </label>
     </div>
 
@@ -165,6 +169,11 @@
       const checkbox = document.getElementById("agree");
       const button = document.getElementById("generate-btn");
       button.disabled = !checkbox.checked;
+    }
+
+    function togglePrivacy() {
+      const full = document.getElementById("privacy-full");
+      full.style.display = full.style.display === "none" ? "block" : "none";
     }
 
     function startGeneration() {
@@ -197,6 +206,5 @@
       window.location.href = "index.html";
     }
   </script>
-
 </body>
 </html>
