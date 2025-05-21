@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>サービス利用フロー（デモ）</title>
+  <style>
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", sans-serif;
+      background-color: #fffaf5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #f2643d;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background-color: #f2643d;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .video-upload {
+      margin-bottom: 1rem;
+    }
+    #progress-container {
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 1rem;
+      display: none;
+    }
+    #progress-bar {
+      height: 20px;
+      width: 0;
+      background-color: #f2643d;
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>てしごとマンガ館</h1>
+  </header>
+
+  <main>
+    <h2>サービス利用フロー（デモ）</h2>
+
+    <label>タイトル:</label>
+    <input type="text" placeholder="ここにタイトルを入力してください">
+
+    <div id="video-container">
+      <div class="video-upload">
+        <input type="file" accept="video/*" onchange="addVideoInput(this)">
+      </div>
+    </div>
+
+    <button onclick="startGeneration()">生成依頼</button>
+
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+  </main>
+
+  <script>
+    function addVideoInput(input) {
+      if (input.files.length > 0) {
+        const container = document.getElementById("video-container");
+        const newUpload = document.createElement("div");
+        newUpload.className = "video-upload";
+        newUpload.innerHTML = '<input type="file" accept="video/*" onchange="addVideoInput(this)">';
+        container.appendChild(newUpload);
+      }
+    }
+
+    function startGeneration() {
+      const progressBar = document.getElementById("progress-bar");
+      const progressContainer = document.getElementById("progress-container");
+      progressContainer.style.display = "block";
+      let progress = 0;
+      progressBar.style.width = "0%";
+
+      const interval = setInterval(() => {
+        if (progress >= 100) {
+          clearInterval(interval);
+          alert("生成が完了しました！");
+        } else {
+          progress += 2;
+          progressBar.style.width = progress + "%";
+        }
+      }, 100); // 100msごとに2%進む（約5秒で完了）
+    }
+  </script>
+
+</body>
+</html>
