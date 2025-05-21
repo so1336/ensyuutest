@@ -53,7 +53,7 @@
   <label for="thumbnailFile">サムネイル画像</label>
   <input type="file" id="thumbnailFile" accept="image/*" />
 
-  <button onclick="upload()">アップロード</button>
+  <button id="uploadBtn">アップロード</button>
   <p class="message" id="message"></p>
 
   <script type="module">
@@ -77,20 +77,24 @@
       }
 
       try {
-        const mangaPath = `manga/${mangaFile.name}`;
-        const thumbPath = `thumbnails/${thumbnailFile.name}`;
+        const mangaPath = `manga/${Date.now()}_${mangaFile.name}`;
+        const thumbPath = `thumbnails/${Date.now()}_${thumbnailFile.name}`;
 
         // マンガ画像アップロード
-        const { error: mangaErr } = await supabase.storage.from('manga').upload(mangaPath, mangaFile, { upsert: true });
+        const { error: mangaErr } = await supabase.storage
+          .from('manga')
+          .upload(mangaPath, mangaFile, { upsert: true });
         if (mangaErr) throw mangaErr;
 
         // サムネイル画像アップロード
-        const { error: thumbErr } = await supabase.storage.from('thumbnails').upload(thumbPath, thumbnailFile, { upsert: true });
+        const { error: thumbErr } = await supabase.storage
+          .from('thumbnails')
+          .upload(thumbPath, thumbnailFile, { upsert: true });
         if (thumbErr) throw thumbErr;
 
         // 公開URL取得
-        const mangaURL = `https://ygbdzopcrxqzzrxqatcn.supabase.co/storage/v1/object/public/manga/${mangaFile.name}`;
-        const thumbURL = `https://ygbdzopcrxqzzrxqatcn.supabase.co/storage/v1/object/public/thumbnails/${thumbnailFile.name}`;
+        const mangaURL = `https://ygbdzopcrxqzzrxqatcn.supabase.co/storage/v1/object/public/manga/${encodeURIComponent(mangaPath.replace('manga/', ''))}`;
+        const thumbURL = `https://ygbdzopcrxqzzrxqatcn.supabase.co/storage/v1/object/public/thumbnails/${encodeURIComponent(thumbPath.replace('thumbnails/', ''))}`;
 
         // DBに登録
         const { error: dbErr } = await supabase.from('manga').insert([
@@ -104,6 +108,8 @@
 
         message.textContent = 'アップロードが完了しました！';
         message.style.color = 'green';
+
+        // フォームをリセット
         document.getElementById('title').value = '';
         document.getElementById('mangaFile').value = '';
         document.getElementById('thumbnailFile').value = '';
@@ -113,6 +119,9 @@
         message.style.color = 'red';
       }
     }
+
+    // ボタンクリック時にupload()を呼ぶ
+    document.getElementById('uploadBtn').addEventListener('click', upload);
   </script>
 </body>
 </html>
